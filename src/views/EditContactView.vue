@@ -51,6 +51,9 @@
         type="file"
         @input="uploadImage($event.target as HTMLInputElement)"
       />
+      <b-form-invalid-feedback :state="validateForm.picture">
+        Insert a valid image
+      </b-form-invalid-feedback>
     </b-form-group>
 
     <b-alert
@@ -61,8 +64,10 @@
     >
       {{ formErrorInfo }}
     </b-alert>
-    <b-button type="submit" variant="dark">Submit</b-button>
-    <b-button type="reset" variant="danger">Cancelar</b-button>
+    <div class="buttons">
+      <b-button type="submit" variant="dark">Submit</b-button>
+      <b-button @click="returnToList()" variant="danger">Cancel</b-button>
+    </div>
   </b-form>
 </template>
 
@@ -106,10 +111,10 @@ const uploadImage = (eventTarget: HTMLInputElement | null) => {
   const reader = new FileReader();
   if (eventTarget && eventTarget.files && eventTarget.files.length > 0)
     reader.readAsDataURL(eventTarget.files[0]);
-    reader.onload = () => {
-      form.value.picture = String(reader.result);
-      processingImage.value = false;
-    };
+  reader.onload = () => {
+    form.value.picture = String(reader.result);
+    processingImage.value = false;
+  };
 };
 
 const validateForm: Ref<{ [key: string]: null | boolean }> = ref({
@@ -119,6 +124,10 @@ const validateForm: Ref<{ [key: string]: null | boolean }> = ref({
   picture: null,
 });
 
+const returnToList = () => {
+  router.push({ path: "/#/" });
+}
+
 const createContact = () => {
   const result = ContactService.create({
     id: -1,
@@ -127,7 +136,7 @@ const createContact = () => {
   });
   if (result.success) {
     formErrorInfo.value = "";
-    router.push("/");
+    router.push({ path: "/#/" });
   } else {
     formErrorInfo.value = result.data || "Error while trying to create contact";
   }
@@ -142,7 +151,7 @@ const editContact = () => {
   console.log(result);
   if (result.success) {
     formErrorInfo.value = "";
-    router.push("/");
+    router.push({ path: "/#/" });
   } else {
     formErrorInfo.value = result.data || "Error while trying to create contact";
   }
@@ -168,6 +177,12 @@ const validateFields = () => {
   } else {
     validateForm.value.email = true;
   }
+  if (form.value.picture.length === 0) {
+    validateForm.value.picture = false;
+    response = false;
+  } else {
+    validateForm.value.picture = true;
+  }
   return response;
 };
 
@@ -183,11 +198,10 @@ const onSubmit = () => {
 </script>
 
 <style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+.buttons {
+  display: flex;
+  min-width: 150px;
+  max-width: 200px;
+  justify-content: space-around;
 }
 </style>

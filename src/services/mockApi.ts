@@ -27,6 +27,7 @@ class Api {
     post(name:string, data: any){
         const parsedData = this.get(name);
         if(!parsedData){
+            data.id = Date.now();
             localStorage.setItem(name, JSON.stringify([data]));
             return {success:true, data: null}
         } else {
@@ -70,9 +71,12 @@ class Api {
     }
 
     private verifyEmailandContact(currentContacts: Contact[], newContact: Contact) {
+        console.log(currentContacts)
+        console.log(newContact)
         const index = currentContacts.findIndex((el: any) => {
-            return el.email === newContact.email || el.contact === newContact.contact
+            return el.id !== newContact.id && (el.email === newContact.email || el.contact === newContact.contact)
         })
+        console.log(index);
         return index > -1 ? false : true;
     }
 

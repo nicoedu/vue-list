@@ -54,7 +54,7 @@ const confirm = () => {
     flex-direction: column;
     align-items: center;
     .buttons {
-      min-width: 30%;
+      min-width: 300px;
       display: flex;
       justify-content: space-between;
     }

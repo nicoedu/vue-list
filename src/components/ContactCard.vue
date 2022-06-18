@@ -33,7 +33,7 @@
             <template #button-content>
               <img :src="optionIconSrc" alt="options" class="menu-icon" />
             </template>
-            <b-dropdown-item :href="`/edit/${props.contact.id}`"
+            <b-dropdown-item :href="`/#/edit/${props.contact.id}`"
               >Edit</b-dropdown-item
             >
             <b-dropdown-item @click="deleteContact(props.contact.id)"
@@ -44,7 +44,7 @@
       </div>
     </b-card-text>
 
-    <b-button :href="`/edit/${props.contact.id}`" variant="secondary"
+    <b-button :href="`/#/${props.contact.id}`" variant="secondary"
       >Details</b-button
     >
   </b-card>

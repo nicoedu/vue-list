@@ -8,5 +8,15 @@ const onClick = () => {
 
 <template>
   <ContactList />
-  <b-button @click="onClick">Add new contact</b-button>
+  <div class="add-button">
+    <b-button @click="onClick">Add new contact</b-button>
+  </div>
 </template>
+
+<style>
+.add-button {
+  position: fixed;
+  bottom: 2rem;
+  left: 2rem;
+}
+</style>
