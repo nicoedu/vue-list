@@ -3,11 +3,15 @@
     <div v-show="modalActive" class="modal">
       <transition name="modal-animation-inner">
         <div v-show="modalActive" class="modal-inner">
-          <i @click="close" class="far fa-times-circle"></i>
-          <!-- Modal Content -->
-          <span>Are you sure you want to delete this contact?</span>
-          <b-button @click="close" type="button" variant="secondary">Cancel</b-button>
-          <b-button @click="confirm" type="button" variant="danger">Confirm</b-button>
+          <p>Are you sure you want to delete this contact?</p>
+          <div class="buttons">
+            <b-button @click="close" type="button" variant="secondary"
+              >Cancel</b-button
+            >
+            <b-button @click="confirm" type="button" variant="danger"
+              >Confirm</b-button
+            >
+          </div>
         </div>
       </transition>
     </div>
@@ -46,15 +50,13 @@ const confirm = () => {
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
     background-color: #fff;
     padding: 64px 16px;
-    i {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 20px;
-      cursor: pointer;
-      &:hover {
-        color: crimson;
-      }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .buttons {
+      min-width: 30%;
+      display: flex;
+      justify-content: space-between;
     }
   }
 }

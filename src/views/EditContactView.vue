@@ -23,7 +23,7 @@
         :state="validateForm.contact"
         required
       ></b-form-input>
-          <b-form-invalid-feedback :state="validateForm.contact">
+      <b-form-invalid-feedback :state="validateForm.contact">
         The contact info must be an 9 digits number.
       </b-form-invalid-feedback>
     </b-form-group>
@@ -46,13 +46,17 @@
       label="Select picture:"
       label-for="input-4"
     >
-      <input id="input-4" type="file" />
+      <input
+        id="input-4"
+        type="file"
+        @input="uploadImage($event.target as HTMLInputElement)"
+      />
     </b-form-group>
 
     <b-alert
-      variant="dark"
+      variant="danger"
       class="text-center error"
-      v-show="formErrorInfo.length > 0"
+      :show="formErrorInfo.length > 0"
       dismissible
     >
       {{ formErrorInfo }}
@@ -76,7 +80,10 @@ onMounted(() => {
     const currentContact = ContactService.get(Number(route.params.id));
     if (currentContact) {
       delete currentContact.id;
-      form.value = currentContact;
+      form.value = {
+        ...currentContact,
+        contact: String(currentContact.contact),
+      };
     }
     title.value = "Edit contact";
     editMode.value = true;
@@ -86,12 +93,24 @@ let currentEditId = 0;
 const title = ref("Add contact");
 const formErrorInfo = ref("");
 const editMode = ref(false);
+const processingImage = ref(false);
 const form = ref({
   name: "",
   email: "",
   contact: "",
   picture: "",
 });
+
+const uploadImage = (eventTarget: HTMLInputElement | null) => {
+  processingImage.value = true;
+  const reader = new FileReader();
+  if (eventTarget && eventTarget.files && eventTarget.files.length > 0)
+    reader.readAsDataURL(eventTarget.files[0]);
+    reader.onload = () => {
+      form.value.picture = String(reader.result);
+      processingImage.value = false;
+    };
+};
 
 const validateForm: Ref<{ [key: string]: null | boolean }> = ref({
   name: null,
@@ -120,6 +139,7 @@ const editContact = () => {
     ...form.value,
     contact: Number(form.value.contact),
   });
+  console.log(result);
   if (result.success) {
     formErrorInfo.value = "";
     router.push("/");
@@ -133,10 +153,9 @@ const validateFields = () => {
   if (form.value.name.length <= 5) {
     validateForm.value.name = false;
     response = false;
-  }else{
+  } else {
     validateForm.value.name = true;
   }
-  console.log(form.value.contact.match(/^\d{9}$/))
   if (!form.value.contact.match(/^\d{9}$/)) {
     validateForm.value.contact = false;
     response = false;
@@ -146,16 +165,16 @@ const validateFields = () => {
   if (!form.value.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
     validateForm.value.email = false;
     response = false;
-  }else{
+  } else {
     validateForm.value.email = true;
   }
   return response;
 };
 
-const onSubmit = (event) => {
-  console.log(form.value)
-  console.log(form.value.contact.length)
-  event.preventDefault();
+const onSubmit = () => {
+  if (processingImage.value) {
+    formErrorInfo.value = "Wait for the image to be processed";
+  }
   if (!validateFields()) {
     return;
   }

@@ -5,8 +5,9 @@
   />
   <b-card
     :title="props.contact.name"
-    img-src="https://picsum.photos/600/300/?image=25"
+    :img-src="props.contact.picture"
     img-alt="Image"
+    img-height="159"
     img-top
     tag="article"
     style="max-width: 20rem"

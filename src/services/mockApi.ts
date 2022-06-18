@@ -60,7 +60,13 @@ class Api {
 
     delete(name:string, id?: number){
         const parsedData = this.get(name);
-        
+        const item = parsedData.findIndex((el: any) => el.id === id)
+        if(item < 0){
+            return {success: false, data: "Contact not found"};
+        }
+        parsedData.splice(item, 1);
+        localStorage.setItem(name, JSON.stringify(parsedData));
+        return {success: true, data: null}
     }
 
     private verifyEmailandContact(currentContacts: Contact[], newContact: Contact) {
