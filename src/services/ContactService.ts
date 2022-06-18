@@ -1,3 +1,4 @@
+import type { Contact } from "@/models/contact";
 import Api from "./mockApi";
 
 class ContactService {
